@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -30,6 +31,8 @@ public class SwerveModule extends SubsystemBase {
 
     // Current state
     private SwerveModuleState state = new SwerveModuleState();
+
+    private LinearFilter turnEncoderSyncFilter = LinearFilter.singlePoleIIR(1, 0.2);
 
     public SwerveModule(Object[] Arr) {
         // Get variables from options and add them to the class
@@ -138,9 +141,20 @@ public class SwerveModule extends SubsystemBase {
         return new SwerveModulePosition(m_driveMotorEncoder.getPosition(), new Rotation2d(getAbsoluteEncoderRad()));
     }
 
+    public void syncTurnMotorEncoderSmooth() {
+        // Make sure it's using radians instead of rotations
+        this.m_turningMotorEncoder.setPositionConversionFactor(Constants.Swerve.Module.kTurningEncoder_RotationToRadian);
+        
+        // Reset the motor encoder with the value of the absolute encoder
+        // The getAbsoluteEncoderRad() function returns the value in radians
+        m_turningMotorEncoder.setPosition(this.turnEncoderSyncFilter.calculate(getAbsoluteEncoderRad()));
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber(m_name+" Abs Encoder", m_turningAbsoluteEncoder.getAbsolutePosition());
         SmartDashboard.putNumber(m_name+" Motor Turning Encoder", getTurningEncoderPositionRad());
+
+        syncTurnMotorEncoderSmooth();
     }
 }

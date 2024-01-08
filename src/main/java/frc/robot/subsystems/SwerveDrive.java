@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -9,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -23,15 +26,14 @@ public class SwerveDrive extends SubsystemBase{
 
     private ChassisSpeeds speeds = new ChassisSpeeds();
 
+    private double lastYaw = 0.;
+    private double lastYawTime = Timer.getFPGATimestamp();
+    private double yawSpeedRadiansPerSecond = 0.;
+
     // Create a swerve drive odometry instance to calculate robot position
     public final SwerveDriveOdometry m_odometry;
 
-    public SwerveDrive(
-        SwerveModule m_frontLeft,
-        SwerveModule m_frontRight,
-        SwerveModule m_backLeft,
-        SwerveModule m_backRight
-    ) {
+    public SwerveDrive(SwerveModule m_frontLeft, SwerveModule m_frontRight, SwerveModule m_backLeft, SwerveModule m_backRight) {
         this.m_frontLeft = m_frontLeft;
         this.m_frontRight = m_frontRight;
         this.m_backLeft = m_backLeft;
@@ -103,5 +105,20 @@ public class SwerveDrive extends SubsystemBase{
             System.out.println("Error updating odometry: " + e);
         }
         return m_odometry;
+    }
+
+    public void driveFieldRelative
+
+    @Override
+    public void periodic() {
+        double currentYaw = this.getRotation2d().getRadians();
+        double yawDelta = currentYaw - lastYaw;
+        double currentYawTime = Timer.getFPGATimestamp();
+        double yawTimeDelta = currentYawTime - lastYawTime;
+        double yawSpeedRadiansPerSecond = yawDelta * yawTimeDelta;
+
+        this.lastYaw = currentYaw;
+        this.lastYawTime = currentYawTime;
+        this.yawSpeedRadiansPerSecond = yawSpeedRadiansPerSecond;
     }
 }

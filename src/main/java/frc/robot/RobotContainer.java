@@ -41,7 +41,7 @@ public class RobotContainer {
         () -> m_driverController.getLeftY(),
         () -> -m_driverController.getLeftX(),
         () -> m_driverController.getRightX(),
-        () -> m_driverController.a().getAsBoolean()
+        () -> m_driverController.rightBumper().getAsBoolean()
       )
     );
 
@@ -50,7 +50,7 @@ public class RobotContainer {
       () -> m_driverController.getRightTriggerAxis(),
       () -> 0.0,
       () -> 0.0,
-      () -> m_driverController.a().getAsBoolean()
+      () -> m_driverController.rightBumper().getAsBoolean()
     ));
   }
 

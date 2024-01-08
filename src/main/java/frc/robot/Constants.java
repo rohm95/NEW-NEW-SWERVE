@@ -54,7 +54,8 @@ public final class Constants {
         public static final Translation2d m_backLeftLocation = new Translation2d(-kWheelBase/2, -kTrackWidth/2); // Back Left Wheel Location
         public static final Translation2d m_backRightLocation = new Translation2d(-kWheelBase/2, kTrackWidth/2); // Back Right Wheel Location
 
-        public static final double kMaxSpeedMetersPerSecond = 5.0; // Maxima Velocidad en Metros por Segundo
+        public static final double kMaxSpeedMetersPerSecond = 10.0; // Maxima Velocidad en Metros por Segundo
+        //public static final double kMaxSpeedMetersPerSecond = 5.0; // Maxima Velocidad en Metros por Segundo
         public static final double kMaxAngularSpeedRadiansPerSecond = 2.0 * 2.0 * Math.PI; // Maxima Velocidad Angular en Radianes por Segundo
 
         public static final double kMaxAccelerationUnitsPerSecond = 3.0; // Maxima Aceleracion
